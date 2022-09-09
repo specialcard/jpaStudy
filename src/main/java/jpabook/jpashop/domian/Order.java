@@ -25,6 +25,18 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @OneToOne
+    @JoinColumn(name = "DELIVERY_ID")
+    private Delivery delivery;
+
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+
     public void addOrderItem(OrderItem orderItem){
         //연관관계 주인이 아닐 떄 세팅 유틸
         orderItems.add(orderItem);
