@@ -36,6 +36,18 @@ public class JpaMain {
 
             em.persist(moive);
 
+            em.flush();
+            em.clear();
+
+
+            //getReference << 쓸경우  find와 다르게 안쪽 메소드를 호출해야지
+            //쿼리가 나감 getReference target -> moive
+            //getReference 호출뒤 똑같은걸 find로 호출하면 find객체도 proxy형태가 됨.
+            //반대로하면 find -> getReference proxy객체가아닌 movie 객체가됨
+            //getReference :: 준영속상태(영속성컨테이너에없을경우) 에러발생
+            Movie refMoive = em.getReference(Movie.class, moive.getId());
+
+
 
             //양방향 아니여도 세팅 가능함
 //            Order order = new Order();

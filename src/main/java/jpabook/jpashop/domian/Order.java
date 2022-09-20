@@ -13,11 +13,11 @@ public class Order extends BaseEntity{
     @Column(name = "ORDER_ID")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)   //cascade 자동으로 영속성애 넣을지 말지 결정
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime orderDate;
@@ -25,7 +25,10 @@ public class Order extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToOne
+    //cascade 자동으로 영속성컨테이너 넣을지 말지 결정 , orphanRemoval 부모객체을 지우면 같이 지워짐
+    //위 두개 사용시 주의점 ::: 다른곳에서 안쓰고 이 엔티티에서만 쓸때 사용해야된다.
+    //ex) OneToMany, OneToOne 인데  Entity를 다른곳에서 참조하여 안쓸때 써야된다.
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL , orphanRemoval = true)
     @JoinColumn(name = "DELIVERY_ID")
     private Delivery delivery;
 
