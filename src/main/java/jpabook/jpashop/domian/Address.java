@@ -24,7 +24,7 @@ public class Address {
         this.zipcode = zipcode;
     }
     //Entity가아닌 값타입을 경우 의미있는 메소드를 만들수있음
-    private String FullAddress() {
+    public String FullAddress() {
         return getCity() + getStreet() + getZipcode();
     }
 
