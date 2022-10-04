@@ -22,6 +22,9 @@ public class Member extends BaseEntity{
     @OneToMany(mappedBy = "member")
     private List<Order> Orders = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    private MemberClassType memberClassType;
+
 //    @ElementCollection
 //    @AttributeOverrides(@AssociationOverride(@JoinColumn(name = ""))) 값타입객체로 사용할때씀
 //    테이블도 따로만들어짐 cascade, orphanRemoval 처럼 작동함
@@ -51,29 +54,13 @@ public class Member extends BaseEntity{
         this.name = name;
     }
 
-//    public String getCity() {
-//        return city;
-//    }
-//
-//    public void setCity(String city) {
-//        this.city = city;
-//    }
-//
-//    public String getStreet() {
-//        return street;
-//    }
-//
-//    public void setStreet(String street) {
-//        this.street = street;
-//    }
-//
-//    public String getZipcode() {
-//        return zipcode;
-//    }
-//
-//    public void setZipcode(String zipcode) {
-//        this.zipcode = zipcode;
-//    }
+    public MemberClassType getMemberClassType() {
+        return memberClassType;
+    }
+
+    public void setMemberClassType(MemberClassType memberClassType) {
+        this.memberClassType = memberClassType;
+    }
 
     public List<Order> getOrders() {
         return Orders;

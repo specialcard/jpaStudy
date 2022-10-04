@@ -20,9 +20,9 @@ public class JpaMain {
 
 //            Member m1 = new Member();
 //
-//            m1.setName("김영구");
-//            m1.setAddress(new Address("서울", "대방구" ,"홍길동"));
-//
+//            m1.setName("최승혁");
+//            m1.setAddress(new Address("인천시", "부평구 청천동" ,"1-3"));
+//            m1.setMemberClassType(MemberClassType.BRONZE);
 //            em.persist(m1);
 //
 //            Member m2 = new Member();
@@ -44,11 +44,14 @@ public class JpaMain {
                 System.out.println(member.getName() + member.getAddress().FullAddress());
             }
 
+
             //형변환 활용
             List MemberList2 = em.createQuery("select m.name , m.id from Member m").getResultList();
 
             Object MemberList2Object = MemberList2.get(0);
+
             Object[] result2 = (Object[]) MemberList2Object;
+
             System.out.println(result2[0]);
             System.out.println(result2[1]);
 
@@ -67,6 +70,14 @@ public class JpaMain {
             }
 
 
+            //페이징처리
+            List<Member> pagingResult = em.createQuery("select m from Member m order by m.name",Member.class)
+                    .setFirstResult(0)
+                    .setMaxResults(10)
+                    .getResultList();
+            for(Member m : pagingResult){
+                System.out.println(m.getName());
+            }
 
 //            Member MemberResult = Qry.setParameter("name", "김").getSingleResult();
 
@@ -117,6 +128,38 @@ public class JpaMain {
 //            OrderItem orderItem = new OrderItem();
 //            orderItem.setOrder(order);
 //            em.persist(orderItem);
+
+
+            //enumType Sql
+            //이넘 sql예시
+            //파라미터로 안받으면 경로써야함 ex) m.memberClassType = jpabook.jpashop.domain.MemberClassType.DIAMOND
+            String enumSql = "select m from Member m where m.memberClassType = :Mtypes";
+
+            List<Member> enumSqlList = em.createQuery(enumSql,Member.class)
+                    .setParameter("Mtypes", MemberClassType.DIAMOND)
+                    .getResultList();
+
+            for(Member m : enumSqlList){
+                System.out.println(m.getName());
+
+            }
+
+            //상속관계시 type 으로 찾기
+//            String typeSql = "select i from Item i where type(i) = BOOK ";
+//
+//            List<Object[]> ss = em.createQuery(typeSql)
+//                    .getResultList();
+
+            //caseSql
+            String caseSql = "select " +
+                             "case m.name when '최승혁' then '최승혁이네' else '일반유저' end " +
+                             "from Member m ";
+
+            List<String> caseSqlList = em.createQuery(caseSql, String.class)
+                    .getResultList();
+            for(String s : caseSqlList){
+                System.out.println(s);
+            }
 
             tx.commit();
         }catch (Exception e){
