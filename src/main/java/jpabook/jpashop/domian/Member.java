@@ -1,5 +1,7 @@
 package jpabook.jpashop.domian;
 
+import org.hibernate.annotations.BatchSize;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class Member extends BaseEntity{
     @Embedded
     private Address address;
 
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "member")
     private List<Order> Orders = new ArrayList<>();
 

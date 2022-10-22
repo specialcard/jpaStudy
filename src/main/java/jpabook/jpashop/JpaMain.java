@@ -38,7 +38,7 @@ public class JpaMain {
             String sql = "select m from Member m where m.name like :name";
 
             List<Member> MemberResult = em.createQuery(sql,Member.class)
-                    .setParameter("name", "%"+"영"+"%")
+                    .setParameter("name", "%"+"형"+"%")
                     .getResultList();
             for(Member member : MemberResult){
                 System.out.println(member.getName() + member.getAddress().FullAddress());
@@ -160,6 +160,44 @@ public class JpaMain {
             for(String s : caseSqlList){
                 System.out.println(s);
             }
+
+            //경로표현식
+            //잘못된 예시 > "select m.orders.OrderStatus from Member m"; 컬렉션에선 그다음으로 접근불가
+            //조인으로 명시적으로 해줘야됨 > "select o.OrderStatus from Member m join Order o";
+            //명시적조인으로 별칭을 얻어야된다.
+            String pathSql = "select o.id from Member m join m.Orders o";
+
+            List<Long> pathSqlList = em.createQuery(pathSql, Long.class).getResultList();
+
+            for(Long s : pathSqlList){
+                System.out.println(s);
+            }
+
+            //fetch join
+            //조인패치를 쓰면 조인대상도 다가지고(조회) 옴
+            //둘 이상의 컬랙션 패차 조인x => team 의 orders, members 둘다 조회시 x
+            //패치조인 대상에는 별칭을 줄수 없습니다.(관례상x) *하이버네이트는 가능  ex)"select t from Team t join fetch t.members as m where m.name ='11' "; x
+            // 예시 중복제거 > select distinct Member m  join fetch m.Orders
+            // distinct를 쓰면 어플리케이션 레벨에서 중복제거해줌
+            //jpql :: select i from item i where treat(i as Book).auther = 'kim'; jpql 자식으로 형변환
+            String fetchSql = "select m from Member m left join fetch m.Orders where m.name like '%김%' ";
+
+            List<Member> fetchSqlList = em.createQuery(fetchSql, Member.class).getResultList();
+//            일대다에 경우 사용금지 setFirstResult, setMaxResults 사용금지 (전부 조회해오고 메모리에 올려서 계산해 가지고옴) => 다대일로 순서 바꿔서 조회 , @BatchSize(size = 100), xml에 배치사이즈적용 활용
+//            List<Member> fetchSqlList2 = em.createQuery(fetchSql, Member.class).setFirstResult(0).setMaxResults(1).getResultList();
+
+            for(Member s : fetchSqlList){
+                System.out.println(s.getOrders().size());
+                System.out.println(s.getName());
+                //컬렉션 페치조인후 값 조회
+                for(Order o : s.getOrders()){
+
+
+
+                    System.out.println(o.getDelivery());
+                }
+            }
+
 
             tx.commit();
         }catch (Exception e){
