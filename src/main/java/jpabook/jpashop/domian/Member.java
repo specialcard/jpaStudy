@@ -7,6 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQuery(
+        name = "Member.findOneMember",
+        query = "select m from Member m where m.id = :memberId"
+)
+//@NamedQuery(
+//        name = "Member.findOneMember", 관례상 entity.쿼리이름
+//        query = "select m from Member m where m.id = :memberId"
+//)
+// 장점  로딩시 캐시에 저장되어 쓸수 있음
+// 단점 정적 쿼리만 가능
+// xml에 작성하여 쓸수 있음
 public class Member extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)

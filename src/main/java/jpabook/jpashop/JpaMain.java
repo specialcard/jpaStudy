@@ -1,13 +1,16 @@
 package jpabook.jpashop;
-
 import jpabook.jpashop.domian.*;
+import jpabook.jpashop.domian.testInterface.testInter;
+import jpabook.jpashop.domian.testInterface.testInterlmp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class JpaMain {
+
     public static void main(String[] args) {
+
         //persistence.xml 유닛네임 넣어줌
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("jpaStudy");
         // EntityManager 쓰레드간 공유 x
@@ -198,6 +201,25 @@ public class JpaMain {
                 }
             }
 
+
+
+            //네임드쿼리 실행
+            Member namedQueryMember = em.createNamedQuery("Member.findOneMember",Member.class)
+                    .setParameter("memberId", 2L).getSingleResult();
+
+
+            System.out.println("namedQueryMember.getName() ======: " + namedQueryMember.getName());
+
+
+            //벌크연산 실행(실행전에 flush됨)
+            //벌크연산수행후 clear() 실행 영속성 컨택스트에서 가지올수있음
+            int upadateMemberCnt = em.createQuery("update Member m set m.memberClassType = :memberClassType")
+                    .setParameter("memberClassType",MemberClassType.DIAMOND).executeUpdate();
+
+
+            System.out.println("upadateMemberCnt ======: " + upadateMemberCnt);
+
+            em.clear();
 
             tx.commit();
         }catch (Exception e){
